@@ -1,0 +1,72 @@
+.include "m16def.inc" ;dhlwsh mikroelegkth
+.def A=r16 	      ;dhlwsh kataxwrhtwn
+.def B=r17 		  ;kai antistoixhsh me  metavlhtes
+.def C=r18
+.def D=r19
+.def E=r20
+.def F=r21
+.def temp=r22
+.def tempA=r23
+.cseg
+.org0 			  ;diey8ynsh ekkinhshs
+
+	clr temp
+	out DDRC,temp ;C 8yra eisodou
+	ser temp
+	out PORTC,temp 
+	out DDRA,temp ;A 8yra eksodou
+	
+loop_exer2:
+	in temp,PINC ;diavazw thn eisodo
+	lsr temp
+	lsr temp 
+	mov A,temp 	 ;to bit2 ths eisodou ston A
+	move tempA,temp
+	lsr temp
+	mov B,temp  ;to bit3 ths eisodou ston B
+	lsr temp
+	mov C,temp  ;to bit4 ths eisodou ston C
+	lsr temp
+	mov D,temp  ;to bit5 ths eisodou ston D
+	lsr temp
+	mov E,temp  ;to bit6 ths eisodou ston E
+	lsr temp
+	mov F,temp  ;to bit 7 ths eisodou ston F
+	
+myfun21:
+	and A,B 
+	mov temp,C 
+	com D 			;D'
+	com E 			;E'
+	and temp,D 
+	and temp,E 		;C*D'*E'
+	or temp,A 		;A*B + C*D'*E'
+	andi temp,0x01 	;to LSB
+	out PORTA,temp 	;outpout sto 1o bit ths 8yras A
+	
+	;epanafora twn A,D,E 
+	com D 
+	com E
+	mov A,tempA
+	
+myfun22:
+	com C 
+	and A,B 
+	and A,C
+	and A,D 
+	com D 
+	com F 
+	and D,E
+	and D,F 
+	or A,D 			;sto LSB tou A to apotelesma ths X1
+	mov tempA,A 	;to apotelesma ths X1 ston tempA
+	andi A,0x01 	;krataw to LSB
+	lsl A
+	out PORTA,A 	;outpout sto 2o bit ths 8yras A
+	
+myfun23:
+	or temp,tempA 
+	lsl temp
+	lsl temp
+	out PORTA,temp	;outpout sto 2o bit ths 8yras A
+	rjmp loop_exer2 ;synexomenh leitourgia

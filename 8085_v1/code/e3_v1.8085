@@ -1,0 +1,39 @@
+START:
+LDA 2000H         ;pairnw eisodo apo tous diakoptes 
+CPI 63H	        ;tsekarw an einai megaluteros tou 99
+JNC MORETHAN99
+MVI D,FFH	        ;(D)=-1 se sumplhrwma ws pros 2
+
+LESSTHAN99:
+INR D  		   ;(D)<--(D)+1
+SUI 0AH 	        ;afairw 10 ka8e fora
+JNC LESSTHAN99   ;oso einai 8etikos afairw ksana to 10
+ADI 0AH		   ;dior8wnw to arnhtiko upoloipo
+MOV H,A    	   ;o Ç exei pleon tis monades   
+SUB A 		   ;mhdenizw ton A 
+ADD D 		   ;(A)=(D)
+RAL		        ;kanw 4 RAL giati 8elw tis dekades sta MSB twn LED
+RAL
+RAL
+RAL
+ADD H 		   ;pros8etw kai tis monades gia na emfanistoun sta LSB twn LED
+CMA 			
+STA 3000H
+JMP START	        ;exw sunexomenh roh programmatos
+
+MORETHAN99: 
+MVI E,F0H	        ;(E)=11110000
+MOV A,E		   ;(A)<--(E)
+CMA			
+STA 3000H
+LXI B,0F47H       ;fortwnw ston BC enan ari8mo gia na exw swsth ka8usterhsh
+CALL DELB	        ;h sunarthsh DELB eisagei ka8usterhsh ish me (1ms)*(BC))
+MVI E,0FH	        ;(E)=00001111
+MOV A,E		   ;(A)<--(E)
+CMA
+STA 3000H
+LXI B,0A64H	   ;fortwnw ston BC enan ari8mo gia na exw swsth ka8usterhsh
+CALL DELB	        ;h sunarthsh DELB eisagei ka8usterhsh ish me (1ms)*(BC))
+JMP START	        ;exw sunexomenh roh programmatos
+
+END

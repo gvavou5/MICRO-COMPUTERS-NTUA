@@ -1,0 +1,51 @@
+IN 10H  		 ; etsi exw prosvash sth RAM 
+MVI B,01H 
+MVI C,F4H		 ; insert delay to see led's movement
+MVI D,01H		 ; reg D show which led have to open
+STC 			 ; kanw thn curry flag ish me 1 
+CMC			 ; sigoura twra exw curry=0 
+MOV A,D		
+CMA 
+STA 3000H	      ; au8aireta anavw to led1 me xrhsh antistrofhs logikhs
+
+
+BEGIN:  
+LDA 2000H		 ; fortwnw ston A tis 8eseis twn dip switches
+RAR			 ; Curry= LSB 
+JC  STABLE	 ; an LSB=1 paramenw sthn katastash pou eimai
+RAL         
+RAL	 	      ; Curry_Flag= MSB  
+JC  MTOL	      ; an MSB=1 tote paw apo 8-->1
+JMP LTOM	      ; alliws paw apo 1-->8
+
+
+STABLE:
+MOV A,D    	 ; (A)<--(D) gia na parameinw sto idio LED kai na mhn paw sto epomeno         
+JMP LEDOPEN 
+
+
+LEDOPEN:  
+MOV D,A		 ; (A)--> (D)
+CMA
+STA 3000H 	 ; anavw to antistoixo LED 
+CALL DELB	      ; eisagwka8usterhsh
+JMP BEGIN 
+
+LTOM:   
+MOV A,D		 ; (A)<--(D)
+RAL      	    	 ; paw sto epomeno LED(sto epomeno apo aristera)
+JC GOTOLED1	 ; an eimai sto LED 8 paw sto 1 
+JMP LEDOPEN
+
+GOTOLED1: 
+SUB A		 ; (A)=0
+ADI 01H 		 ; (A)=1
+JMP LEDOPEN
+
+
+MTOL:   
+MOV A,D		 ; (A)<--(D)
+RRC			 ; paw sto epomeno LED(sto epomeno apo deksia)
+JMP LEDOPEN
+
+END

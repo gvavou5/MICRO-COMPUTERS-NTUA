@@ -1,0 +1,21 @@
+START:	MVI C,08H
+		LDA 2000H
+TAG2:	RAL 
+		JC TAG1
+		DCR C
+		JNZ TAG2
+TAG1:	MOV A,C
+		CMA
+		STA 3000H
+		JMP START
+		END
+
+
+skopos tou kwdika : analoga me thn eisodo pou 
+8a tou balw 8a mou dwsei mesw twn leds poia einai
+h 8esh toy pio shmantikou assou pou uparxei san 
+eisodos se duasikh morfh(des ta leds)
+
+px:
+input : 0001 0111
+leds  : 0000 0101

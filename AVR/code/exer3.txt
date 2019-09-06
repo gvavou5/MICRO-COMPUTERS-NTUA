@@ -1,0 +1,82 @@
+.INCLUDE "m16def.inc" ;dhlwsh mikroelegkth
+.def reg=r16 		  ;orismos kataxwrhth
+.def temp=r17
+.def reg1=r18
+
+allstarts:
+	clr temp
+	out DDRD,temp 	;port D 8yra eisodou
+	set temp
+	out DDRB,temp 	;port B 8yra eksodou
+	out PORTD,temp 	
+	ldi temp,0x01	
+	out PORTB,temp 	;anavw to LSB led
+
+check_point:
+	in reg,PIND 	;anagnwsh ths eisodou
+	mov reg1,reg 	
+	andi reg,0x0F 	;00001111 an ola pathmena
+	cpi reg,0x0F 	;an ola pathmena ==> arxikh katastash 
+	breq keepsame
+	
+	mov reg,reg1 	;epanaferw th swsth timh
+	andi reg,0x03 
+	cpi reg,0x03 	;an einai pathmena ta sw0 sw1
+	breq goleft
+	
+	mov reg,reg1 	;epanaferw th swsth timh
+	andi reg,0x05  
+	cpi reg,0x05 	;an einai pathmena ta sw0 sw2
+	breq goright
+	
+	mov reg,reg1 	;epanaferw th swsth timh
+	andi reg,0x06  
+	cpi reg,0x06 	;an einai pathmena ta sw1 sw2
+	breq goleft2times
+	
+	mov reg,reg1 	;epanaferw th swsth timh
+	andi reg,0x09 
+	cpi reg,0x09 	;an einai pathmena ta sw0 sw3
+	breq goright2times
+	
+	mov reg,reg1 	;epanaferw th swsth timh
+	andi reg,0x0A  
+	cpi reg,0x0A 	;an einai pathmena ta sw1 sw3
+	breq turn0_1
+	
+	mov reg,reg1 	;epanaferw th swsth timh
+	andi reg,0x0C  
+	cpi reg,0x0C 	;an einai pathmena ta sw2 sw3
+	breq keepsame
+	
+keepsame:
+	ldi temp,0x01	;temp=00000001
+	out PORTB,temp 	;anavw to LSB led
+	rjmp check_point
+	
+goleft:
+	rol temp
+	out PORTB,temp
+	rjmp check_point
+	
+goright:
+	ror temp
+	out PORTB,temp
+	rjmp check_point
+
+goleft2times:
+	rol temp
+	rol temp
+	out PORTB,temp
+	rjmp check_point
+	
+goright2times:
+	ror temp
+	ror temp
+	out PORTB,temp
+	rjmp check_point
+	
+turn0_1:
+	ldi temp,0x03 	;temp=00000011
+	out PORTB,temp 	;anavw ta led 0 kai 1
+	rjmp check_point

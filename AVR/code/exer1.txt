@@ -1,0 +1,58 @@
+.INCLUDE "m16def.inc" ;dhlwsh mikroelegkth
+.def temp=r16
+.def reg=r17
+.def Delay=r18 		  ;kataxwrhths metablhths ka8ysterhshs
+
+
+	clr temp 		
+	out DDRD,temp 	;PORTD 8yra eisodou
+	ser temp 		
+	out DDRB,temp 	;PORTB 8yra eksodou
+	out PORTD,temp 	
+					
+
+CHECK_POINT:
+	in temp,PIND
+	andi temp,0x80 	;MSB
+	cpi temp,0	   	;an to MSB einai 0 
+	breq LABEL0
+	
+LABEL1:
+	ldi reg,0xFF 	;anavw ta led gia 0.5 sec giati MSB=1
+	out PORTB,reg 	
+	rcall DELAY1 
+	ldi reg,0x00 	;svhnw ta led gia 1.5 sec giati MSB=1
+	out PORTB,reg 	
+	rcall DELAY2
+	rjmp CHECK_POINT 		
+
+LABEL0:
+	ldi reg,0xFF 	;anavw ta led gia 1.5 sec giati MSB=0
+	out PORTB,reg 	
+	rcall DELAY2
+	ldi reg,0x00 	;svhnw ta led gia 0.5 sec giati MSB=0
+	out PORTB,reg 	
+	rcall DELAY1
+	rjmp CHECK_POINT 			
+	
+	
+;0.5sec=500msec ==> Delay10 50 fores
+
+DELAY1:
+	ldi Delay,50
+	CHECKDELAY1:
+		rcall Delay10
+		dec Delay
+		brne CHECKDELAY1
+	ret
+	
+	
+;1.5sec=1500msec ==> Delay10 150 fores
+
+DELAY2:
+	ldi Delay,150
+	CHECKDELAY2:
+		rcall Delay10
+		dec Delay
+		brne CHECKDELAY2
+	ret

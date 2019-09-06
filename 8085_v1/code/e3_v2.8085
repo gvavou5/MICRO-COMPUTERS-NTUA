@@ -1,0 +1,47 @@
+START: 
+LDA 2000H      ;pairnw eisodo apo tous diakoptes 
+MVI D,FFH	      ;(D)=-1 se sumplhrwma ws pros 2
+MOV L,A
+
+FINDFORALL: 
+INR D  		  ;(D)<--(D)+1
+SUI 0AH 	       ;afairw 10 ka8e fora
+JNC FINDFORALL  ;oso einai 8etikos afairw ksana to 10
+ADI 0AH		   ;dior8wnw to arnhtiko upoloipo
+MOV H,A    	   ;o H exei pleon tis monades   
+SUB A 		   ;mhdenizw ton A 
+ADD D 		   ;(A)=(D), o D exei tis dekades
+RAL		     ;kanw 4 RAL giati 8elw tis dekades sta MSB twn LED
+RAL
+RAL
+RAL
+ADD H 		   ;pros8etw kai tis monades gia na emfanistoun sta LSB twn LED
+MOV H,A		   ;krataw to periexomeno toy A (dekades+monades))
+CMA 			
+STA 3000H
+MOV A,L		   ;o A exei thn eisodo apo tous diakoptes gia na kanw sugkrish   
+CPI 63H	   	   
+JNC MORETHAN99   ;tsekarw an einai megaluteros tou 99
+JMP START	       ;exw sunexomenh roh programmatos
+
+MORETHAN99: 
+MOV A,H		;epanaferw ston A dekades kai monades
+MVI E,F0H	     ;(E)=11110000
+ANA E	     ;krataw mono tis dekades
+CMA			
+STA 3000H
+LXI B,0F47H    ;fortwnw ston BC enan ari8mo gia na exw swsth ka8usterhsh
+CALL DELB      ;h sunarthsh DELB eisagei ka8usterhsh ish me (1ms)*(BC))
+MVI E,0FH	     ;(E)=00001111
+MOV A,H        ;epanaferw ston A dekades kai monades
+ANA E	     ;krataw mono tis monades
+CMA 
+STA 3000H
+LXI B,0A65H    ;fortwnw ston BC enan ari8mo gia na exw swsth ka8usterhsh
+CALL DELB	     ;h sunarthsh DELB eisagei ka8usterhsh ish me (1ms)*(BC))
+LDA 2000H	      ;diabazw ksana thn eisodo apo tous diakoptes
+CMP H           ;tsekarw an h twrinh me thn palia eisodo einai idies
+JZ MORETHAN99   ;an einai idies ta led menoun idia
+JMP START	      ;alliws exei do8ei kainourgios ari8mos
+
+END
